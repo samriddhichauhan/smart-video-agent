@@ -1,0 +1,75 @@
+# ==========================================
+# AI Meeting Assistant - requirements.txt
+# ==========================================
+
+# ---------- Streamlit UI ----------
+streamlit
+
+# ---------- Backend / API ----------
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# ---------- Audio & YouTube ----------
+yt-dlp
+ffmpeg-python
+pydub
+moviepy
+
+# ---------- Speech To Text ----------
+openai-whisper
+torch
+torchaudio
+
+# ---------- Translation ----------
+deep-translator
+
+# ---------- LangChain ----------
+langchain
+langchain-core
+langchain-community
+
+# ---------- Mistral API ----------
+langchain-mistralai
+mistralai
+
+# ---------- RAG Pipeline ----------
+chromadb==0.5.5
+sentence-transformers
+langchain-huggingface
+
+# ---------- Embeddings / Transformers ----------
+transformers
+accelerate
+
+# ---------- Text Processing ----------
+tiktoken
+
+# ---------- Export PDF/TXT ----------
+reportlab
+fpdf
+
+# ---------- Data Processing ----------
+numpy
+pandas==2.2.3
+
+# ---------- Utilities ----------
+requests
+tqdm
+
+# ---------- Optional Better Parsing ----------
+unstructured
+
+# ==========================================
+# IMPORTANT NOTES
+# ==========================================
+
+# Use Python 3.11 recommended
+# Install FFmpeg separately for Whisper
+
+# FFmpeg:
+# https://ffmpeg.org/download.html
+
+# Install packages:
+# pip install -r requirements.txt        
