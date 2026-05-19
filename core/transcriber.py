@@ -29,9 +29,10 @@ def transcribe_chunk(chunk_path: str, translate: bool = False) -> str:
     task = "translate" if translate else "transcribe"
 
     result = model.transcribe(
-        chunk_path,
-        task=task
-    )
+    chunk_path,
+    task=task,
+    fp16=False
+)
 
     return result["text"]
 
