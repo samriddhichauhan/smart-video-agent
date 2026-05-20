@@ -26,3 +26,10 @@ __pycache__/
 *.mp3
 *.webm
 *.part
+.env
+downloads/
+__pycache__/
+*.mp3
+*.wav
+*.webm
+*.part
