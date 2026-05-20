@@ -18,3 +18,11 @@ downloads/
 # OS files
 .DS_Store
 Thumbs.db
+
+.env
+downloads/
+__pycache__/
+*.wav
+*.mp3
+*.webm
+*.part
