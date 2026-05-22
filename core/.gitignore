@@ -6,51 +6,18 @@ __pycache__/
 *.pyc
 .venv/
 
-# Downloads
+# Downloads / Generated media
 downloads/
-
-# Audio/video
 *.mp3
 *.wav
 *.webm
 *.part
+
+# Generated transcripts
+transcript.txt
+transcript_test.txt
+translated_output.txt
 
 # OS files
 .DS_Store
 Thumbs.db
-
-.env
-downloads/
-__pycache__/
-*.wav
-*.mp3
-*.webm
-*.part
-.env
-downloads/
-__pycache__/
-*.mp3
-*.wav
-*.webm
-*.part
-
-.env
-downloads/
-__pycache__/
-*.mp3
-*.wav
-*.webm
-*.part
-transcript.txt
-transcript_test.txt
-translated_output.txt
-transcript.txt
-transcript_test.txt
-translated_output.txt
-downloads/
-translated_output.txt
-transcript.txt
-transcript_test.txt
-*.mp3
-*.wav
-*.part
