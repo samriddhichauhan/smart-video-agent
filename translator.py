@@ -5,12 +5,13 @@ from core.transcriber import transcribe_chunks
 def translate_hindi_video():
 
     VIDEO_URL = input(
-        "https://www.youtube.com/watch?v=dtqxANR_tiE&pp=ygURc2hvcnQgaGluZmkgdmlkZXA%3D"
+        "Enter Hindi YouTube URL: "
     )
 
     print(
         "\nDownloading and processing audio...\n"
     )
+
     chunks = process_audio_from_youtube(
         VIDEO_URL
     )
@@ -30,21 +31,17 @@ def translate_hindi_video():
         encoding="utf-8"
     ) as file:
 
-        file.write(
-            transcript
-        )
+        file.write(transcript)
 
     print(
         "\nTranslation completed!"
     )
 
     print(
-        "\nPreview:\n"
+        "\nFULL TRANSLATION:\n"
     )
 
-    print(
-        transcript[:1000]
-    )
+    print(transcript)
 
 
 if __name__ == "__main__":
