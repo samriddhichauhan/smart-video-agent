@@ -33,3 +33,14 @@ __pycache__/
 *.wav
 *.webm
 *.part
+
+.env
+downloads/
+__pycache__/
+*.mp3
+*.wav
+*.webm
+*.part
+transcript.txt
+transcript_test.txt
+translated_output.txt
