@@ -20,17 +20,13 @@ def download_audio_from_youtube(url: str) -> str:
 
     ydl_opts = {
         "format": "bestaudio/best",
-
         "outtmpl": output_template,
-
         "ffmpeg_location": FFMPEG_BIN,
-
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
-
         "quiet": False,
     }
 
@@ -73,7 +69,17 @@ def convert_to_wav(input_path: str) -> str:
         "-y"
     ]
 
-    subprocess.run(command)
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode != 0:
+        print(result.stderr)
+        raise Exception(
+            "WAV conversion failed"
+        )
 
     return output_path
 
@@ -87,12 +93,15 @@ def chunk_audio(
         chunk_length_minutes * 60
     )
 
-    output_folder = (
-        os.path.splitext(input_path)[0]
-        + "_chunks"
+    output_folder = os.path.join(
+        DOWNLOAD_DIR,
+        "chunks"
     )
 
-    os.makedirs(output_folder, exist_ok=True)
+    os.makedirs(
+        output_folder,
+        exist_ok=True
+    )
 
     output_pattern = os.path.join(
         output_folder,
@@ -113,7 +122,17 @@ def chunk_audio(
         "-y"
     ]
 
-    subprocess.run(command)
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode != 0:
+        print(result.stderr)
+        raise Exception(
+            "Chunk generation failed"
+        )
 
     chunk_files = [
         os.path.join(output_folder, file)
@@ -151,7 +170,14 @@ def process_audio_from_youtube(url: str) -> list:
 
     print("Chunking audio")
 
-    chunks = chunk_audio(wav_path)
+    chunks = chunk_audio(
+        wav_path
+    )
+
+    if len(chunks) == 0:
+        raise Exception(
+            "No chunks generated"
+        )
 
     print(
         f"Audio ready - {len(chunks)} chunks generated"
