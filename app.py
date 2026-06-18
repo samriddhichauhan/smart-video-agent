@@ -2,11 +2,27 @@ import streamlit as st
 
 from utils.audio_processor import process_audio_from_youtube
 from core.transcriber import transcribe_chunks
-from core.summarizer import (
-    split_transcript,
-    summarize_chunks,
-    combine_summaries
-)
+
+# Summary Imports
+try:
+    from core.summarizer import (
+        split_transcript,
+        summarize_chunks,
+        combine_summaries
+    )
+    SUMMARY_AVAILABLE = True
+except Exception as e:
+    print(e)
+    SUMMARY_AVAILABLE = False
+
+# MCQ Imports
+try:
+    from core.mcq_generator import generate_mcqs
+    MCQ_AVAILABLE = True
+except Exception as e:
+    print(e)
+    MCQ_AVAILABLE = False
+
 
 st.set_page_config(
     page_title="AI Video Assistant",
@@ -16,38 +32,60 @@ st.set_page_config(
 
 # Sidebar
 with st.sidebar:
+
     st.title("🎥 AI Video Assistant")
 
     st.markdown("""
-    ### Features
+### Features
 
-    ✅ YouTube Audio Download
+✅ YouTube Audio Download
 
-    ✅ Whisper Transcription
+✅ Whisper Transcription
 
-    ✅ Hindi Translation
+✅ AI Summary Generation
 
-    ✅ AI Summarization
+✅ AI Quiz Generation
 
-    ✅ Download Transcript
+✅ Download Transcript
 
-    ✅ Download Summary
-    """)
+✅ Download Summary
+
+✅ Download Quiz
+
+✅ Streamlit Interface
+""")
 
 # Main UI
 st.title("🎥 AI Video Assistant")
+
+st.markdown(
+    """
+Convert YouTube videos into transcripts using Whisper AI.
+Generate summaries and quizzes using Mistral AI.
+"""
+)
 
 youtube_url = st.text_input(
     "Enter YouTube URL"
 )
 
+# =========================
+# TRANSCRIPT
+# =========================
+
 if st.button("Generate Transcript"):
 
-    if youtube_url:
+    if not youtube_url:
 
-        status = st.empty()
+        st.warning(
+            "Please enter a YouTube URL."
+        )
+
+    else:
 
         try:
+
+            status = st.empty()
 
             status.info(
                 "Downloading and processing audio..."
@@ -65,26 +103,13 @@ if st.button("Generate Transcript"):
                 chunks
             )
 
+            st.session_state[
+                "transcript"
+            ] = transcript
+
             status.success(
-                "Transcription Complete!"
+                "Transcript generated successfully!"
             )
-
-            st.subheader("Transcript")
-
-            st.text_area(
-                "Transcript",
-                transcript,
-                height=400
-            )
-
-            st.download_button(
-                "⬇ Download Transcript",
-                transcript,
-                file_name="transcript.txt"
-            )
-
-            # Save transcript for summary
-            st.session_state["transcript"] = transcript
 
         except Exception as e:
 
@@ -92,29 +117,54 @@ if st.button("Generate Transcript"):
                 f"Error: {str(e)}"
             )
 
-    else:
+# Display Transcript
 
-        st.warning(
-            "Please enter a YouTube URL"
-        )
-
-# Summary Section
 if "transcript" in st.session_state:
 
-    if st.button("Generate Summary"):
+    st.subheader(
+        "📄 Transcript"
+    )
+
+    st.text_area(
+        "Transcript",
+        st.session_state[
+            "transcript"
+        ],
+        height=400
+    )
+
+    st.download_button(
+        label="⬇ Download Transcript",
+        data=st.session_state[
+            "transcript"
+        ],
+        file_name="transcript.txt",
+        mime="text/plain"
+    )
+
+# =========================
+# SUMMARY
+# =========================
+
+if (
+    "transcript" in st.session_state
+    and SUMMARY_AVAILABLE
+):
+
+    if st.button(
+        "Generate Summary"
+    ):
 
         try:
 
             with st.spinner(
-                "Generating AI Summary..."
+                "Generating Summary..."
             ):
 
-                transcript = st.session_state[
-                    "transcript"
-                ]
-
                 chunks = split_transcript(
-                    transcript
+                    st.session_state[
+                        "transcript"
+                    ]
                 )
 
                 chunk_summaries = summarize_chunks(
@@ -125,26 +175,115 @@ if "transcript" in st.session_state:
                     chunk_summaries
                 )
 
-            st.success(
-                "Summary Generated!"
-            )
-
-            st.subheader(
-                "AI Summary"
-            )
-
-            st.write(
-                final_summary
-            )
-
-            st.download_button(
-                "⬇ Download Summary",
-                final_summary,
-                file_name="summary.txt"
-            )
+                st.session_state[
+                    "summary"
+                ] = final_summary
 
         except Exception as e:
 
             st.error(
                 f"Summary Error: {str(e)}"
             )
+
+# Display Summary
+
+if "summary" in st.session_state:
+
+    st.subheader(
+        "📝 AI Summary"
+    )
+
+    st.write(
+        st.session_state[
+            "summary"
+        ]
+    )
+
+    st.download_button(
+        label="⬇ Download Summary",
+        data=st.session_state[
+            "summary"
+        ],
+        file_name="summary.txt",
+        mime="text/plain"
+    )
+
+# =========================
+# MCQs
+# =========================
+
+if (
+    "transcript" in st.session_state
+    and MCQ_AVAILABLE
+):
+
+    if st.button(
+        "Generate MCQs"
+    ):
+
+        try:
+
+            with st.spinner(
+                "Generating MCQs..."
+            ):
+
+                mcqs = generate_mcqs(
+                    st.session_state[
+                        "transcript"
+                    ]
+                )
+
+                st.session_state[
+                    "mcqs"
+                ] = mcqs
+
+        except Exception as e:
+
+            st.error(
+                f"MCQ Error: {str(e)}"
+            )
+
+# Display MCQs
+
+if "mcqs" in st.session_state:
+
+    st.subheader(
+        "📚 Generated Quiz"
+    )
+
+    st.text_area(
+        "Quiz",
+        st.session_state[
+            "mcqs"
+        ],
+        height=500
+    )
+
+    st.download_button(
+        label="⬇ Download Quiz",
+        data=st.session_state[
+            "mcqs"
+        ],
+        file_name="quiz.txt",
+        mime="text/plain"
+    )
+
+# Footer
+
+st.markdown("---")
+
+st.markdown("""
+Built with:
+
+• Whisper AI
+
+• yt-dlp
+
+• FFmpeg
+
+• Mistral AI
+
+• Python
+
+• Streamlit
+""")
