@@ -35,35 +35,32 @@ with st.sidebar:
 
     st.title("🎥 AI Video Assistant")
 
+    st.success("🟢 System Ready")
+
+    st.markdown("### AI Models")
+
+    st.info("🎤 Whisper Small")
+    st.info("🧠 Mistral Small")
+
+    st.markdown("---")
+
     st.markdown("""
 ### Features
 
-✅ YouTube Audio Download
+✅ YouTube Download
 
-✅ Whisper Transcription
+✅ Speech-to-Text
 
-✅ AI Summary Generation
+✅ AI Summary
 
-✅ AI Quiz Generation
+✅ Quiz Generation
 
-✅ Download Transcript
+✅ Transcript Export
 
-✅ Download Summary
+✅ Summary Export
 
-✅ Download Quiz
-
-✅ Streamlit Interface
+✅ Quiz Export
 """)
-
-# Main UI
-st.title("🎥 AI Video Assistant")
-
-st.markdown(
-    """
-Convert YouTube videos into transcripts using Whisper AI.
-Generate summaries and quizzes using Mistral AI.
-"""
-)
 
 youtube_url = st.text_input(
     "Enter YouTube URL"
@@ -116,7 +113,35 @@ if st.button("Generate Transcript"):
             st.error(
                 f"Error: {str(e)}"
             )
+search_term = st.text_input(
+    "🔍 Search Transcript"
+)
 
+if (
+    search_term
+    and "transcript" in st.session_state
+):
+
+    if search_term.lower() in st.session_state[
+        "transcript"
+    ].lower():
+
+        st.success(
+            f"Found '{search_term}'"
+        )
+
+    else:
+
+        st.warning(
+            f"'{search_term}' not found"
+        )
+tab1, tab2, tab3 = st.tabs(
+    [
+        "📄 Transcript",
+        "📝 Summary",
+        "📚 Quiz"
+    ]
+)
 # Display Transcript
 
 if "transcript" in st.session_state:
@@ -141,6 +166,25 @@ if "transcript" in st.session_state:
         file_name="transcript.txt",
         mime="text/plain"
     )
+if "transcript" in st.session_state:
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric(
+            "Words",
+            len(
+                st.session_state[
+                    "transcript"
+                ].split()
+            )
+        )
+
+    with col2:
+        st.metric(
+            "Status",
+            "Complete"
+        )
 
 # =========================
 # SUMMARY
